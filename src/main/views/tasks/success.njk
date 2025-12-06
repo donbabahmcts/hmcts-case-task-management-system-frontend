@@ -1,0 +1,80 @@
+{% extends "template.njk" %}
+{% from "govuk/components/panel/macro.njk" import govukPanel %}
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+{% from "govuk/components/tag/macro.njk" import govukTag %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+{% block content %}
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    {{ govukPanel({
+      titleText: "Task Created Successfully",
+      html: 'Task ID: <strong>' + task.id + '</strong>'
+    }) }}
+
+    <h2 class="govuk-heading-m">Task Details</h2>
+
+    <dl class="govuk-summary-list">
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Title</dt>
+        <dd class="govuk-summary-list__value">{{ task.title }}</dd>
+      </div>
+
+      {% if task.description %}
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Description</dt>
+        <dd class="govuk-summary-list__value">{{ task.description }}</dd>
+      </div>
+      {% endif %}
+
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Status</dt>
+        <dd class="govuk-summary-list__value">
+          <strong class="govuk-tag {% if task.status == 'PENDING' %}govuk-tag--blue{% elif task.status == 'IN_PROGRESS' %}govuk-tag--yellow{% endif %}">
+            {{ task.statusDisplayName }}
+          </strong>
+        </dd>
+      </div>
+
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Due Date</dt>
+        <dd class="govuk-summary-list__value">
+          {{ task.dueDateTime | replace('T', ' at ') }}
+          {% if task.dueToday %}
+          <br><strong class="govuk-tag govuk-tag--orange">Due Today</strong>
+          {% elif task.overdue %}
+          <br><strong class="govuk-tag govuk-tag--red">Overdue</strong>
+          {% else %}
+          <br><span class="govuk-hint">{{ task.hoursUntilDue }} hours remaining</span>
+          {% endif %}
+        </dd>
+      </div>
+
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Created At</dt>
+        <dd class="govuk-summary-list__value">{{ task.createdAt | replace('T', ' at ') }}</dd>
+      </div>
+    </dl>
+
+    <h2 class="govuk-heading-m">What happens next</h2>
+
+    <p class="govuk-body">
+      Your task has been created and saved successfully. You can now:
+    </p>
+
+    <ul class="govuk-list govuk-list--bullet">
+      <li>Create another task</li>
+      <li>View your task list (when available)</li>
+      <li>Return to the home page</li>
+    </ul>
+
+    <div class="govuk-button-group">
+      {{ govukButton({
+        text: "Create Another Task",
+        href: "/tasks/create"
+      }) }}
+      <a class="govuk-link" href="/">Return to Home</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

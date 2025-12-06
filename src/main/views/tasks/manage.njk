@@ -1,0 +1,148 @@
+{% extends "template.njk" %}
+{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/textarea/macro.njk" import govukTextarea %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+{% block content %}
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    <h1 class="govuk-heading-xl">{{ pageTitle }}</h1>
+
+    {% if errorMessage %}
+      {% set errorList = [] %}
+      {% if validationErrors %}
+        {% for field, error in validationErrors %}
+          {% set errorList = (errorList.push({
+            text: error,
+            href: "#" + field
+          }), errorList) %}
+        {% endfor %}
+      {% endif %}
+      {{ govukErrorSummary({
+        titleText: "There is a problem",
+        descriptionText: errorMessage if not validationErrors else "",
+        errorList: errorList
+      }) }}
+    {% endif %}
+
+    <form method="POST" action="{{ formAction }}" novalidate>
+      <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+      {% if action == 'update' %}
+        <input type="hidden" name="_method" value="PUT">
+      {% elif action == 'delete' %}
+        <input type="hidden" name="_method" value="DELETE">
+      {% endif %}
+
+      {{ govukInput({
+        label: {
+          text: "Task Title *",
+          classes: "govuk-label--m"
+        },
+        hint: {
+          text: "A short description of what needs to be done (3-200 characters)"
+        },
+        id: "title",
+        name: "title",
+        value: formData.title if formData else "",
+        errorMessage: {
+          text: validationErrors.title
+        } if validationErrors.title else undefined,
+        attributes: {
+          required: true
+        }
+      }) }}
+
+      {{ govukTextarea({
+        label: {
+          text: "Description",
+          classes: "govuk-label--m"
+        },
+        hint: {
+          text: "Additional details about the task (optional, max 1000 characters)"
+        },
+        id: "description",
+        name: "description",
+        rows: 5,
+        value: formData.description if formData else "",
+        errorMessage: {
+          text: validationErrors.description
+        } if validationErrors.description else undefined
+      }) }}
+
+      {{ govukRadios({
+        fieldset: {
+          legend: {
+            text: "Status *",
+            classes: "govuk-fieldset__legend--m"
+          }
+        },
+        hint: {
+          text: "Select the current state of this task"
+        },
+        name: "status",
+        errorMessage: {
+          text: validationErrors.status
+        } if validationErrors.status else undefined,
+        items: [
+          {
+            value: "PENDING",
+            text: "Pending",
+            hint: {
+              text: "Task is awaiting action"
+            },
+            checked: not formData or formData.status == "PENDING"
+          },
+          {
+            value: "IN_PROGRESS",
+            text: "In Progress",
+            hint: {
+              text: "Task is currently being worked on"
+            },
+            checked: formData and formData.status == "IN_PROGRESS"
+          }
+        ]
+      }) }}
+
+      {{ govukInput({
+        label: {
+          text: "Due Date and Time *",
+          classes: "govuk-label--m"
+        },
+        hint: {
+          html: "When this task should be completed (e.g., 2025-12-15T14:30)<br><strong>Note:</strong> Cannot be on weekends or UK bank holidays"
+        },
+        id: "dueDateTime",
+        name: "dueDateTime",
+        type: "datetime-local",
+        classes: "govuk-input--width-20",
+        value: formData.dueDateTime if formData else "",
+        errorMessage: {
+          text: validationErrors.dueDateTime
+        } if validationErrors.dueDateTime else undefined,
+        attributes: {
+          required: true
+        }
+      }) }}
+
+      <div class="govuk-button-group">
+        {{ govukButton({
+          text: "Create Task" if action == 'create' else "Update Task"
+        }) }}
+        {% if action == 'update' %}
+          {{ govukButton({
+            text: "Delete Task",
+            classes: "govuk-button--warning",
+            attributes: {
+              formaction: formAction | replace('/update', '/delete'),
+              onclick: "return confirm('Are you sure you want to delete this task?');"
+            }
+          }) }}
+        {% endif %}
+        <a class="govuk-link" href="{{ '/tasks' if action == 'update' else '/' }}">Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}
