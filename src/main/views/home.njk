@@ -1,121 +1,94 @@
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+{% from "govuk/components/notification-banner/macro.njk" import govukNotificationBanner %}
 
 {% extends "template.njk" %}
 
-<!-- You may want to make further use of these components: https://design-system.service.gov.uk/components/
-but ultimately it is up to you -->
-
 {% block content %}
-  <h1 class="govuk-heading-xl">Welcome to your dev test!</h1>
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <h1 class="govuk-heading-xl">HMCTS Task Management System</h1>
 
-  <!-- The freedom is yours. You can design the solution however you like, however there is a starting point provided
-  to ensure you have both services running. You may want to make use of the Gov UK Components:
-  https://design-system.service.gov.uk/components/ to add tabs and so forth :) -->
+      {% if backendStatus == 'DOWN' %}
+      {% set html %}
+        <p class="govuk-notification-banner__heading">
+          Backend service is currently unavailable at {{ backendUrl }}
+        </p>
+        <p class="govuk-body">Some features may not work correctly.</p>
+      {% endset %}
 
-  {% if example.id %}
+      {{ govukNotificationBanner({
+        type: "error",
+        html: html
+      }) }}
+      {% endif %}
 
-    {{ govukSummaryList({
-      rows: [
-        {
-          key: {
-            text: "ID"
-          },
-          value: {
-            text: example.id
-          },
-          actions: {
-            items: [
-              {
-                href: "#",
-                text: "Change",
-                visuallyHiddenText: "change case id ?!"
-              }
-            ]
-          }
-        },
-        {
-          key: {
-            text: "Case Number"
-          },
-          value: {
-            text: example.caseNumber
-          },
-          actions: {
-            items: [
-              {
-                href: "#",
-                text: "Change",
-                visuallyHiddenText: "change case number"
-              }
-            ]
-          }
-        },
-        {
-          key: {
-            text: "Title"
-          },
-          value: {
-            html: example.title
-          },
-          actions: {
-            items: [
-              {
-                href: "#",
-                text: "Change",
-                visuallyHiddenText: "change case title"
-              }
-            ]
-          }
-        },
-        {
-          key: {
-            text: "Description"
-          },
-          value: {
-            html: example.description
-          },
-          actions: {
-            items: [
-               {
-                 href: "#",
-                 text: "Delete",
-                 visuallyHiddenText: "Delete description"
-               },
-               {
-                 href: "#",
-                 text: "Change",
-                 visuallyHiddenText: "Change description"
-               }
-            ]
-          }
-        },
-        {
-          key: {
-            text: "Status"
-          },
-          value: {
-            html: example.status
-          },
-          actions: {
-            items: [
-            ]
-          }
-        },
-        {
-          key: {
-           text: "Created Date"
-          },
-          value: {
-           html: example.createdDate
-          },
-          actions: {
-           items: [
-           ]
-          }
-        }
-      ]
-    }) }}
+      <p class="govuk-body-l">
+        Manage your tasks efficiently with our comprehensive task management system.
+      </p>
 
-  {% endif %}
+      <h2 class="govuk-heading-m">Quick Actions</h2>
 
+      <div class="govuk-grid-row">
+        <div class="govuk-grid-column-one-half">
+          <div class="govuk-panel" style="background-color: #f3f2f1; padding: 20px;">
+            <h3 class="govuk-heading-s">Create New Task</h3>
+            <p class="govuk-body-s">Add a new task with title, description, status, and due date.</p>
+            <a href="/tasks/create" role="button" draggable="false" class="govuk-button govuk-button--start" data-module="govuk-button">
+              Create Task
+              <svg class="govuk-button__start-icon" xmlns="http://www.w3.org/2000/svg" width="17.5" height="19" viewBox="0 0 33 40" aria-hidden="true" focusable="false">
+                <path fill="currentColor" d="M0 0h13l20 20-20 20H0l20-20z"/>
+              </svg>
+            </a>
+          </div>
+        </div>
+
+        <div class="govuk-grid-column-one-half">
+          <div class="govuk-panel" style="background-color: #f3f2f1; padding: 20px;">
+            <h3 class="govuk-heading-s">View All Tasks</h3>
+            <p class="govuk-body-s">See all your tasks in one place with status and priority.</p>
+            <a href="/tasks" role="button" draggable="false" class="govuk-button govuk-button--secondary" data-module="govuk-button">
+              View Tasks
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <h2 class="govuk-heading-m govuk-!-margin-top-6">Features</h2>
+
+      <ul class="govuk-list govuk-list--bullet">
+        <li>Create tasks with titles, descriptions, and due dates</li>
+        <li>Set task status (Pending, In Progress, Completed, Cancelled)</li>
+        <li>Automatic validation for business days (no weekends or bank holidays)</li>
+        <li>Priority indicators based on due dates</li>
+        <li>Real-time status tracking</li>
+      </ul>
+
+      <h2 class="govuk-heading-m">System Status</h2>
+
+      {{ govukSummaryList({
+        rows: [
+          {
+            key: {
+              text: "Backend Service"
+            },
+            value: {
+              html: '<strong class="govuk-tag ' + ('govuk-tag--green' if backendStatus == 'UP' else 'govuk-tag--red') + '">' + backendStatus + '</strong>'
+            }
+          },
+          {
+            key: {
+              text: "API Endpoint"
+            },
+            value: {
+              text: backendUrl
+            }
+          }
+        ]
+      }) }}
+
+      <p class="govuk-body govuk-!-margin-top-6">
+        <a href="/tasks/create" class="govuk-link">Get started by creating your first task</a>
+      </p>
+    </div>
+  </div>
 {% endblock %}
