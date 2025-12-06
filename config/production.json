@@ -1,1 +1,12 @@
-{}
+{
+  "services": {
+    "backend": {
+      "url": "BACKEND_URL_PLACEHOLDER",
+      "timeout": 10000
+    }
+  },
+  "logging": {
+    "level": "info",
+    "prettyPrint": false
+  }
+}

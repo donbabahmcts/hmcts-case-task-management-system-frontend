@@ -1,1 +1,19 @@
-{}
+{
+  "api": {
+    "baseUrl": "http://localhost:4000"
+  },
+  "services": {
+    "backend": {
+      "url": "http://localhost:4000",
+      "timeout": 10000
+    }
+  },
+  "server": {
+    "port": 3100,
+    "shutdownTimeout": 10000
+  },
+  "logging": {
+    "level": "info",
+    "prettyPrint": true
+  }
+}
