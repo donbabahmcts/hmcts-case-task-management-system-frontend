@@ -25,7 +25,7 @@
       </p>
 
       <form method="post" action="/auth/validate-email" novalidate>
-        {% include "macros/csrf.njk" %}
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}">
 
         {{ govukInput({
           label: {
