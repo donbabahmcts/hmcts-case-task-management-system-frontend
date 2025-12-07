@@ -88,13 +88,9 @@ app.use(
   })
 );
 
-// CSRF Protection
+// CSRF Protection - use session storage instead of cookies
 const csrfProtection = csrf({
-  cookie: {
-    httpOnly: true,
-    secure: env === 'production',
-    sameSite: 'strict',
-  },
+  cookie: false, // Use session instead of cookies
 });
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 app.use(csrfProtection as any);
