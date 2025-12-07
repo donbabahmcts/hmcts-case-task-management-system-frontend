@@ -22,7 +22,9 @@ describe('AuthenticationService', () => {
       const email = 'test@example.com';
       const mockResponse = {
         data: {
-          valid: true,
+          success: true,
+          emailValidated: true,
+          email: 'test@example.com',
           message: 'Email is valid',
         },
         status: 200,
@@ -33,7 +35,8 @@ describe('AuthenticationService', () => {
       const result = await authService.validateEmail(email);
 
       // Then
-      expect(result.valid).toBe(true);
+      expect(result.success).toBe(true);
+      expect(result.emailValidated).toBe(true);
       expect(result.message).toBe('Email is valid');
       expect(mockedAxios.post).toHaveBeenCalledWith(
         `${mockBackendUrl}/api/auth/validate-email`,

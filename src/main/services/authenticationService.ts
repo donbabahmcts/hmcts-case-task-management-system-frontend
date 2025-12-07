@@ -2,7 +2,9 @@ import axios, { AxiosError } from 'axios';
 import { logger } from '../utils/logger';
 
 export interface ValidateEmailResponse {
-  valid: boolean;
+  success: boolean;
+  emailValidated: boolean;
+  email: string;
   message: string;
 }
 
@@ -63,8 +65,14 @@ export class AuthenticationService {
         }
       );
 
-      logger.info('Email validation successful', { email, valid: response.data.valid });
-      return response.data;
+      logger.info('Email validation successful', { email, emailValidated: response.data.emailValidated });
+      // Transform backend response to expected format
+      return {
+        success: response.data.success,
+        emailValidated: response.data.emailValidated,
+        email: response.data.email,
+        message: response.data.message,
+      };
     } catch (error) {
       return this.handleError(error as AxiosError, 'Email validation failed');
     }
