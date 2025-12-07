@@ -1,3 +1,5 @@
+/// <reference path="../types/express-session.d.ts" />
+
 import { logger } from '../utils/logger';
 import { requireAuth } from '../middleware/auth';
 
