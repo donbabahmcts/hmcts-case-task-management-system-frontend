@@ -27,7 +27,7 @@ jest.mock('config', () => ({
   get: jest.fn((key: string) => {
     if (key === 'services.backend') {
       return {
-        url: 'http://localhost:9090',
+        url: 'http://localhost:4000',
         timeout: 10000,
       };
     }
@@ -75,7 +75,7 @@ describe('Tasks Routes', () => {
 
       const response = await request(app).get('/tasks');
       expect(response.status).toBe(200);
-      expect(mockedAxios.get).toHaveBeenCalledWith('http://localhost:9090/api/tasks', {
+      expect(mockedAxios.get).toHaveBeenCalledWith('http://localhost:4000/api/tasks', {
         timeout: 10000,
       });
     });
@@ -124,7 +124,7 @@ describe('Tasks Routes', () => {
 
       expect(response.status).toBe(200);
       expect(mockedAxios.post).toHaveBeenCalledWith(
-        'http://localhost:9090/api/tasks',
+        'http://localhost:4000/api/tasks',
         {
           title: 'Test Task',
           description: 'Test Description',

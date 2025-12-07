@@ -27,7 +27,7 @@ jest.mock('config', () => ({
   get: jest.fn((key: string) => {
     if (key === 'services.backend') {
       return {
-        url: 'http://localhost:9090',
+        url: 'http://localhost:4000',
         timeout: 10000,
       };
     }
