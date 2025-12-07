@@ -21,6 +21,8 @@ jest.mock('../../main/utils/logger', () => ({
   },
 }));
 
+import { logger } from '../../main/utils/logger';
+
 // Mock config
 jest.mock('config', () => ({
   has: jest.fn(() => true),
@@ -327,7 +329,7 @@ describe('Tasks Routes', () => {
         },
       });
 
-      const response = await request(app).post('/tasks/create').send({
+      await request(app).post('/tasks/create').send({
         title: 'Test Task',
         description: longDescription,
         status: 'PENDING',
@@ -335,9 +337,7 @@ describe('Tasks Routes', () => {
       });
 
       expect(mockedAxios.post).toHaveBeenCalled();
-    });
-
-    it('should handle special characters in task title', async () => {
+    });    it('should handle special characters in task title', async () => {
       const specialTitle = 'Test & Task <> "Special" \'Chars\'';
 
       mockedAxios.post.mockResolvedValue({
@@ -348,7 +348,7 @@ describe('Tasks Routes', () => {
         },
       });
 
-      const response = await request(app).post('/tasks/create').send({
+      await request(app).post('/tasks/create').send({
         title: specialTitle,
         status: 'PENDING',
         dueDateTime: '2025-12-15T14:30',
@@ -374,7 +374,7 @@ describe('Tasks Routes', () => {
         },
       });
 
-      const response = await request(app).post('/tasks/create').send({
+      await request(app).post('/tasks/create').send({
         title: unicodeTitle,
         status: 'PENDING',
         dueDateTime: '2025-12-15T14:30',
