@@ -1,0 +1,62 @@
+{% extends "template.njk" %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
+
+{% block pageTitle %}
+  {{ pageTitle }} - HMCTS Case Management System
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      
+      {% if errors.length > 0 %}
+        {{ govukErrorSummary({
+          titleText: "There is a problem",
+          errorList: errors
+        }) }}
+      {% endif %}
+
+      <h1 class="govuk-heading-l">{{ pageTitle }}</h1>
+
+      <p class="govuk-body">
+        Enter your email address to sign in to the HMCTS Case Management System.
+      </p>
+
+      <form method="post" action="/auth/validate-email" novalidate>
+        {% include "macros/csrf.njk" %}
+
+        {{ govukInput({
+          label: {
+            text: "Email address",
+            classes: "govuk-label--m"
+          },
+          hint: {
+            text: "We'll use this to identify your account"
+          },
+          id: "email",
+          name: "email",
+          type: "email",
+          autocomplete: "email",
+          spellcheck: false,
+          value: email,
+          errorMessage: {
+            text: errors[0].text
+          } if errors.length > 0 else undefined,
+          classes: "govuk-!-width-two-thirds"
+        }) }}
+
+        {{ govukButton({
+          text: "Continue",
+          type: "submit"
+        }) }}
+      </form>
+
+      <p class="govuk-body govuk-!-margin-top-6">
+        <a href="/" class="govuk-link">Back to home</a>
+      </p>
+
+    </div>
+  </div>
+{% endblock %}
