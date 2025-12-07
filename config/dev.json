@@ -12,5 +12,8 @@
   "logging": {
     "level": "debug",
     "prettyPrint": true
+  },
+  "session": {
+    "secret": "dev-secret-key-for-local-development-only"
   }
 }

@@ -15,5 +15,9 @@
   "logging": {
     "level": "info",
     "prettyPrint": true
+  },
+  "session": {
+    "secret": "your-secret-key-change-this-in-production",
+    "maxAge": 86400000
   }
 }
