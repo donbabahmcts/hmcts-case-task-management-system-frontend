@@ -18,8 +18,9 @@
     "baseUrl": ".",
     "paths": {
       "*": ["src/main/*", "node_modules/*"]
-    }
+    },
+    "typeRoots": ["node_modules/@types", "src/main/types"]
   },
-  "include": ["src/main/**/*"],
+  "include": ["src/main/**/*", "src/main/types/**/*.d.ts"],
   "exclude": ["**/*.test.ts", "**/codecept.conf.ts", "**/__mocks__/*", "node_modules", "dist"]
 }
