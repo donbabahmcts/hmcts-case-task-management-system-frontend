@@ -172,7 +172,7 @@ describe('Tasks Routes', () => {
         response: {
           status: 400,
           data: {
-            message: 'Tasks cannot be due on weekends or bank holidays',
+            message: 'Tasks cannot be due on non business day',
           },
         },
       };
