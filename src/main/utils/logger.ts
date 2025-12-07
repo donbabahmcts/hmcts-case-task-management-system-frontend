@@ -1,96 +1,69 @@
-import * as appInsights from 'applicationinsights';
+import config from 'config';
 
-/**
- * Logger utility for the HMCTS Case Management System
- * Provides structured logging with Application Insights integration
- */
+type LogLevel = 'debug' | 'info' | 'warn' | 'error';
 
-interface LogMetadata {
-  [key: string]: unknown;
+interface LogConfig {
+  level: LogLevel;
+  prettyPrint: boolean;
 }
 
 class Logger {
-  private appInsightsClient: appInsights.TelemetryClient | null = null;
+  private config: LogConfig;
+  private levels: Record<LogLevel, number> = {
+    debug: 0,
+    info: 1,
+    warn: 2,
+    error: 3,
+  };
 
   constructor() {
-    // Initialize Application Insights if connection string is available
-    if (process.env.APPLICATIONINSIGHTS_CONNECTION_STRING) {
-      appInsights
-        .setup(process.env.APPLICATIONINSIGHTS_CONNECTION_STRING)
-        .setAutoCollectRequests(true)
-        .setAutoCollectPerformance(true, true)
-        .setAutoCollectExceptions(true)
-        .setAutoCollectDependencies(true)
-        .setAutoCollectConsole(true, true)
-        .setUseDiskRetryCaching(true)
-        .start();
-
-      this.appInsightsClient = appInsights.defaultClient;
-    }
+    this.config = config.has('logging') ? config.get<LogConfig>('logging') : { level: 'info', prettyPrint: false };
   }
 
-  /**
-   * Log informational message
-   */
-  info(message: string, metadata?: LogMetadata): void {
-    const logMessage = this.formatMessage('INFO', message, metadata);
-    console.log(logMessage);
-    
-    if (this.appInsightsClient) {
-      this.appInsightsClient.trackTrace({
-        message,
-        severity: appInsights.Contracts.SeverityLevel.Information,
-        properties: metadata as { [key: string]: string },
-      });
-    }
+  private shouldLog(level: LogLevel): boolean {
+    return this.levels[level] >= this.levels[this.config.level];
   }
 
-  /**
-   * Log warning message
-   */
-  warn(message: string, metadata?: LogMetadata): void {
-    const logMessage = this.formatMessage('WARN', message, metadata);
-    console.warn(logMessage);
-    
-    if (this.appInsightsClient) {
-      this.appInsightsClient.trackTrace({
-        message,
-        severity: appInsights.Contracts.SeverityLevel.Warning,
-        properties: metadata as { [key: string]: string },
-      });
-    }
-  }
-
-  /**
-   * Log error message
-   */
-  error(message: string, metadata?: LogMetadata): void {
-    const logMessage = this.formatMessage('ERROR', message, metadata);
-    console.error(logMessage);
-    
-    if (this.appInsightsClient) {
-      this.appInsightsClient.trackTrace({
-        message,
-        severity: appInsights.Contracts.SeverityLevel.Error,
-        properties: metadata as { [key: string]: string },
-      });
-
-      // If metadata contains an error object, track it separately
-      if (metadata?.error instanceof Error) {
-        this.appInsightsClient.trackException({ exception: metadata.error });
-      }
-    }
-  }
-
-  /**
-   * Format log message with timestamp and metadata
-   */
-  private formatMessage(level: string, message: string, metadata?: LogMetadata): string {
+  private formatMessage(level: LogLevel, message: string, meta?: unknown): string {
     const timestamp = new Date().toISOString();
-    const metadataString = metadata ? ` ${JSON.stringify(metadata)}` : '';
-    return `[${timestamp}] [${level}] ${message}${metadataString}`;
+    if (this.config.prettyPrint) {
+      const metaStr = meta ? `\n${JSON.stringify(meta, null, 2)}` : '';
+      return `[${timestamp}] ${level.toUpperCase()}: ${message}${metaStr}`;
+    }
+    const logObject: Record<string, unknown> = { timestamp, level, message };
+    if (meta) {
+      logObject.meta = meta;
+    }
+    return JSON.stringify(logObject);
+  }
+
+  debug(message: string, meta?: unknown): void {
+    if (this.shouldLog('debug')) {
+      // eslint-disable-next-line no-console
+      console.debug(this.formatMessage('debug', message, meta));
+    }
+  }
+
+  info(message: string, meta?: unknown): void {
+    if (this.shouldLog('info')) {
+      // eslint-disable-next-line no-console
+      console.info(this.formatMessage('info', message, meta));
+    }
+  }
+
+  warn(message: string, meta?: unknown): void {
+    if (this.shouldLog('warn')) {
+      // eslint-disable-next-line no-console
+      console.warn(this.formatMessage('warn', message, meta));
+    }
+  }
+
+  error(message: string, meta?: unknown): void {
+    if (this.shouldLog('error')) {
+      // eslint-disable-next-line no-console
+      console.error(this.formatMessage('error', message, meta));
+    }
   }
 }
 
-// Export singleton instance
 export const logger = new Logger();
