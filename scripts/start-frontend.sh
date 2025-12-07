@@ -40,11 +40,17 @@ fi
 echo -n "Checking frontend (port $FRONTEND_PORT)... "
 if lsof -i :$FRONTEND_PORT -sTCP:LISTEN -t >/dev/null 2>&1; then
     RUNNING_PID=$(lsof -i :$FRONTEND_PORT -sTCP:LISTEN -t)
-    echo -e "${GREEN}✓ Already running (PID: $RUNNING_PID)${NC}"
-    echo "Access URL: https://localhost:$FRONTEND_PORT"
-    exit 0
+    echo -e "${YELLOW}✓ Already running (PID: $RUNNING_PID)${NC}"
+    echo "  Use './scripts/stop-frontend.sh' to stop it first"
+    echo "  Or access it at: https://localhost:$FRONTEND_PORT"
+    exit 1
 fi
 echo -e "${YELLOW}✗ Not running${NC}"
+
+# Clean up any stale yarn/nodemon processes (not on port but still running)
+pkill -f "yarn.*start:dev" 2>/dev/null
+pkill -f "nodemon.*server.ts" 2>/dev/null
+sleep 1
 
 # Start frontend
 echo -e "\n${YELLOW}Starting frontend...${NC}"
