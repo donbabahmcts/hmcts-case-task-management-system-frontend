@@ -1,8 +1,8 @@
-import { requireAuth, redirectIfAuthenticated, clearAuth } from '../../../main/middleware/auth';
+import { requireAuth, redirectIfAuthenticated, clearAuth } from '../../main/middleware/auth';
 import { Request, Response, NextFunction } from 'express';
-import { logger } from '../../../main/utils/logger';
+import { logger } from '../../main/utils/logger';
 
-jest.mock('../../../main/utils/logger');
+jest.mock('../../main/utils/logger');
 
 describe('Auth Middleware', () => {
   let mockRequest: Partial<Request>;
@@ -11,7 +11,16 @@ describe('Auth Middleware', () => {
 
   beforeEach(() => {
     mockRequest = {
-      session: {},
+      session: {
+        id: 'test-session-id',
+        cookie: {} as any,
+        regenerate: jest.fn(),
+        destroy: jest.fn(),
+        reload: jest.fn(),
+        resetMaxAge: jest.fn(),
+        save: jest.fn(),
+        touch: jest.fn(),
+      } as any,
       path: '/test',
     };
     mockResponse = {
