@@ -1,7 +1,7 @@
 {% from "govuk/components/table/macro.njk" import govukTable %}
 
 {% macro taskCard(task) %}
-  <div class="govuk-body govuk-!-display-block govuk-!-margin-top-6 govuk-!-padding-4" style="border-left: 4px solid 
+  <div class="govuk-body govuk-!-display-block govuk-!-margin-top-6 govuk-!-padding-4" style="border-left: 4px solid
     {% if task.overdue %}#d4351c
     {% elif task.dueToday %}#f47738
     {% elif task.status == 'COMPLETED' %}#00703c
@@ -80,13 +80,6 @@
       </tbody>
     </table>
 
-    <div class="govuk-button-group govuk-!-margin-top-4">
-      <a href="/tasks/{{ task.id }}/edit" role="button" draggable="false" class="govuk-button govuk-button--secondary" data-module="govuk-button">
-        Edit Task
-      </a>
-      <a href="/tasks/{{ task.id }}/delete" role="button" draggable="false" class="govuk-button govuk-button--warning" data-module="govuk-button" onclick="return confirm('Are you sure you want to delete this task?');">
-        Delete Task
-      </a>
-    </div>
+
   </div>
 {% endmacro %}
