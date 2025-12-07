@@ -21,12 +21,14 @@ export default function (app: Application): void {
       res.render('home', {
         backendStatus: 'UP',
         backendUrl: backendConfig.url,
+        email: req.session?.email || null,
       });
     } catch (error) {
       logger.warn('Backend health check failed', { error });
       res.render('home', {
         backendStatus: 'DOWN',
         backendUrl: config.get<ServiceConfig>('services.backend').url,
+        email: req.session?.email || null,
       });
     }
   });
