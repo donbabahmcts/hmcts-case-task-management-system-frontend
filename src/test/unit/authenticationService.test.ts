@@ -1,15 +1,15 @@
-import { AuthenticationService } from '../../../main/services/authenticationService';
+import { AuthenticationService } from '../../main/services/authenticationService';
 import axios from 'axios';
-import { logger } from '../../../main/utils/logger';
+import { logger } from '../../main/utils/logger';
 
 jest.mock('axios');
-jest.mock('../../../main/utils/logger');
+jest.mock('../../main/utils/logger');
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
 describe('AuthenticationService', () => {
   let authService: AuthenticationService;
-  const mockBackendUrl = 'http://localhost:8080';
+  const mockBackendUrl = 'http://localhost:4000';
 
   beforeEach(() => {
     authService = new AuthenticationService(mockBackendUrl);

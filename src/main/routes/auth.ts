@@ -1,6 +1,6 @@
 import { Application, Request, Response } from 'express';
 import { AuthenticationService } from '../services/authenticationService';
-import { redirectIfAuthenticated, clearAuth } from '../middleware/auth';
+import { redirectIfAuthenticated } from '../middleware/auth';
 import { logger } from '../utils/logger';
 import config from 'config';
 
@@ -23,6 +23,7 @@ export default function (app: Application): void {
       pageTitle: 'Sign in',
       errors: req.session?.errors || [],
       email: req.session?.tempEmail || '',
+      csrfToken: req.csrfToken?.() || '',
     });
     // Clear any previous errors
     delete req.session?.errors;
@@ -93,6 +94,7 @@ export default function (app: Application): void {
       pageTitle: 'Enter your password',
       email,
       errors: req.session?.errors || [],
+      csrfToken: req.csrfToken?.() || '',
     });
     // Clear any previous errors
     delete req.session?.errors;
