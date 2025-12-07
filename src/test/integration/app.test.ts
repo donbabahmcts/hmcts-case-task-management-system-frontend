@@ -202,7 +202,8 @@ describe('App Integration Tests', () => {
         .post('/tasks/create')
         .send({ title: 'Test' });
 
-      expect([200, 400, 500]).toContain(response.status);
+      // Tasks routes now require authentication, expect redirect
+      expect([200, 302, 400, 500]).toContain(response.status);
     });
 
     it('should handle requests with query parameters', async () => {
