@@ -1,4 +1,5 @@
 import { logger } from '../utils/logger';
+import { requireAuth } from '../middleware/auth';
 
 import axios from 'axios';
 import config from 'config';
@@ -10,11 +11,17 @@ interface ServiceConfig {
 }
 
 export default function (app: Application): void {
-  app.get('/tasks', async (req: Request, res: Response) => {
+  // Protect all tasks routes with authentication
+  app.get('/tasks', requireAuth, async (req: Request, res: Response) => {
     try {
       const backendConfig = config.get<ServiceConfig>('services.backend');
+      const token = req.session?.token;
+
       const response = await axios.get(`${backendConfig.url}/api/tasks`, {
         timeout: backendConfig.timeout,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       });
 
       logger.info('Tasks fetched successfully', { count: response.data.length });
@@ -22,6 +29,7 @@ export default function (app: Application): void {
       res.render('tasks/list', {
         pageTitle: 'Task List',
         tasks: response.data,
+        email: req.session?.email,
       });
     } catch (error) {
       logger.error('Error fetching tasks', { error });
@@ -32,7 +40,7 @@ export default function (app: Application): void {
     }
   });
 
-  app.get('/tasks/create', (req: Request, res: Response) => {
+  app.get('/tasks/create', requireAuth, (req: Request, res: Response) => {
     res.render('tasks/manage', {
       pageTitle: 'Create New Task',
       csrfToken: req.csrfToken?.() || '',
@@ -41,9 +49,10 @@ export default function (app: Application): void {
     });
   });
 
-  app.post('/tasks/create', async (req: Request, res: Response) => {
+  app.post('/tasks/create', requireAuth, async (req: Request, res: Response) => {
     try {
       const backendConfig = config.get<ServiceConfig>('services.backend');
+      const token = req.session?.token;
 
       const taskData = {
         title: req.body.title,
@@ -58,6 +67,7 @@ export default function (app: Application): void {
         timeout: backendConfig.timeout,
         headers: {
           'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
         },
       });
 
