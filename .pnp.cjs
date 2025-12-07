@@ -44,6 +44,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@types/csurf", "npm:1.11.5"],\
             ["@types/es6-promisify", "npm:6.0.4"],\
             ["@types/express", "npm:4.17.25"],\
+            ["@types/express-session", "npm:1.18.2"],\
             ["@types/glob", "npm:8.1.0"],\
             ["@types/jest", "npm:29.5.14"],\
             ["@types/lodash", "npm:4.17.21"],\
@@ -76,6 +77,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["express", "npm:4.22.1"],\
             ["express-nunjucks", "virtual:3a02cceef93055271d0890b855d0c93a770c9c876ee9b808cf9e23d8d1b8581b5b6efcfb80a9768d650dfa22f93777eca81ae9ef4de2301b22a7619649eb692a#npm:3.1.2"],\
             ["express-rate-limit", "virtual:3a02cceef93055271d0890b855d0c93a770c9c876ee9b808cf9e23d8d1b8581b5b6efcfb80a9768d650dfa22f93777eca81ae9ef4de2301b22a7619649eb692a#npm:7.5.1"],\
+            ["express-session", "npm:1.18.2"],\
             ["express-validator", "npm:7.3.1"],\
             ["glob", "npm:10.5.0"],\
             ["govuk-frontend", "npm:4.8.0"],\
@@ -6279,6 +6281,16 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "linkType": "HARD"\
         }]\
       ]],\
+      ["@types/express-session", [\
+        ["npm:1.18.2", {\
+          "packageLocation": "./.yarn/cache/@types-express-session-npm-1.18.2-8d3c6f2e85-317b749c21.zip/node_modules/@types/express-session/",\
+          "packageDependencies": [\
+            ["@types/express-session", "npm:1.18.2"],\
+            ["@types/express", "npm:4.17.25"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
       ["@types/glob", [\
         ["npm:8.1.0", {\
           "packageLocation": "./.yarn/cache/@types-glob-npm-8.1.0-bdb9d0520c-9101f3a906.zip/node_modules/@types/glob/",\
@@ -9332,6 +9344,13 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["cookie-signature", "npm:1.0.6"]\
           ],\
           "linkType": "HARD"\
+        }],\
+        ["npm:1.0.7", {\
+          "packageLocation": "./.yarn/cache/cookie-signature-npm-1.0.7-a115603de6-1a62808cd3.zip/node_modules/cookie-signature/",\
+          "packageDependencies": [\
+            ["cookie-signature", "npm:1.0.7"]\
+          ],\
+          "linkType": "HARD"\
         }]\
       ]],\
       ["cookiejar", [\
@@ -11159,6 +11178,23 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "linkType": "HARD"\
         }]\
       ]],\
+      ["express-session", [\
+        ["npm:1.18.2", {\
+          "packageLocation": "./.yarn/cache/express-session-npm-1.18.2-1fdf1a09db-3d72db9e2e.zip/node_modules/express-session/",\
+          "packageDependencies": [\
+            ["express-session", "npm:1.18.2"],\
+            ["cookie", "npm:0.7.2"],\
+            ["cookie-signature", "npm:1.0.7"],\
+            ["debug", "virtual:805a6a51d0df6b08b4af25f349d363255a95ecda56326a7424f66814402366e7b8a6f2364c84e429910891b551625fb1d41531b0304bef4bcd62a275f81a3af9#npm:2.6.9"],\
+            ["depd", "npm:2.0.0"],\
+            ["on-headers", "npm:1.1.0"],\
+            ["parseurl", "npm:1.3.3"],\
+            ["safe-buffer", "npm:5.2.1"],\
+            ["uid-safe", "npm:2.1.5"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
       ["express-validator", [\
         ["npm:7.3.1", {\
           "packageLocation": "./.yarn/cache/express-validator-npm-7.3.1-b43f89e382-81271303c0.zip/node_modules/express-validator/",\
@@ -12259,6 +12295,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@types/csurf", "npm:1.11.5"],\
             ["@types/es6-promisify", "npm:6.0.4"],\
             ["@types/express", "npm:4.17.25"],\
+            ["@types/express-session", "npm:1.18.2"],\
             ["@types/glob", "npm:8.1.0"],\
             ["@types/jest", "npm:29.5.14"],\
             ["@types/lodash", "npm:4.17.21"],\
@@ -12291,6 +12328,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["express", "npm:4.22.1"],\
             ["express-nunjucks", "virtual:3a02cceef93055271d0890b855d0c93a770c9c876ee9b808cf9e23d8d1b8581b5b6efcfb80a9768d650dfa22f93777eca81ae9ef4de2301b22a7619649eb692a#npm:3.1.2"],\
             ["express-rate-limit", "virtual:3a02cceef93055271d0890b855d0c93a770c9c876ee9b808cf9e23d8d1b8581b5b6efcfb80a9768d650dfa22f93777eca81ae9ef4de2301b22a7619649eb692a#npm:7.5.1"],\
+            ["express-session", "npm:1.18.2"],\
             ["express-validator", "npm:7.3.1"],\
             ["glob", "npm:10.5.0"],\
             ["govuk-frontend", "npm:4.8.0"],\
@@ -15976,6 +16014,15 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageDependencies": [\
             ["on-finished", "npm:2.4.1"],\
             ["ee-first", "npm:1.1.1"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["on-headers", [\
+        ["npm:1.1.0", {\
+          "packageLocation": "./.yarn/cache/on-headers-npm-1.1.0-7d18779060-98aa64629f.zip/node_modules/on-headers/",\
+          "packageDependencies": [\
+            ["on-headers", "npm:1.1.0"]\
           ],\
           "linkType": "HARD"\
         }]\
