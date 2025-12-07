@@ -102,5 +102,4 @@ export default function (app: Application): void {
       });
     }
   });
-
 }
