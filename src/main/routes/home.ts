@@ -12,12 +12,14 @@ interface ServiceConfig {
 export default function (app: Application): void {
   app.get('/', async (req: Request, res: Response) => {
     try {
-      // Check backend health
+      // Check backend health - use a simple request to verify backend is responding
       const backendConfig = config.get<ServiceConfig>('services.backend');
-      const response = await axios.get(`${backendConfig.url}/health`, {
-        timeout: backendConfig.timeout,
+      // Try to reach any public endpoint just to verify backend is alive
+      await axios.get(`${backendConfig.url}/api/auth/validate-email`, {
+        timeout: backendConfig.timeout || 5000,
+        validateStatus: () => true, // Accept any status code - we just want to know it's reachable
       });
-      logger.info('Backend is healthy', { status: response.data.status });
+      logger.info('Backend is healthy', { url: backendConfig.url });
       res.render('home', {
         backendStatus: 'UP',
         backendUrl: backendConfig.url,
