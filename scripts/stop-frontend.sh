@@ -36,7 +36,7 @@ if [ -n "$FRONTEND_PID" ]; then
         done
         echo $tree
     }
-    
+
     # Also find yarn/nodemon parent processes
     PARENT_PID=$(ps -o ppid= -p $FRONTEND_PID 2>/dev/null | tr -d ' ')
     if [ -n "$PARENT_PID" ] && [ "$PARENT_PID" != "1" ]; then
@@ -51,12 +51,12 @@ if [ -n "$FRONTEND_PID" ]; then
     else
         ALL_PIDS=$(get_process_tree $FRONTEND_PID)
     fi
-    
+
     # Kill all processes in tree
     for pid in $ALL_PIDS; do
         kill -TERM $pid 2>/dev/null
     done
-    
+
     # Wait up to 5 seconds for graceful shutdown
     for i in {1..10}; do
         if ! lsof -i :$FRONTEND_PORT -sTCP:LISTEN -t >/dev/null 2>&1; then
