@@ -42,7 +42,7 @@ export default function (app: Application): void {
       // Validate email with backend
       const result = await authService.validateEmail(email);
 
-      if (result.valid) {
+      if (result.success && result.emailValidated) {
         // Store email temporarily in session and redirect to password page
         req.session!.tempEmail = email;
         logger.info('Email validated successfully, redirecting to password page', { email });
