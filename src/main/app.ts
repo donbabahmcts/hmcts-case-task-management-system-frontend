@@ -9,6 +9,7 @@ import config from 'config';
 import cookieParser from 'cookie-parser';
 import csrf from 'csurf';
 import express, { NextFunction, Request, Response } from 'express';
+import session from 'express-session';
 import { rateLimit } from 'express-rate-limit';
 import { glob } from 'glob';
 import helmet from 'helmet';
@@ -71,6 +72,21 @@ app.use(favicon(path.join(__dirname, '/public/assets/images/favicon.ico')));
 app.use(bodyParser.json({ limit: '10mb' }));
 app.use(bodyParser.urlencoded({ extended: false, limit: '10mb' }));
 app.use(cookieParser());
+
+// Session configuration
+app.use(
+  session({
+    secret: config.get<string>('session.secret') || 'your-secret-key-change-in-production',
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      secure: env === 'production',
+      httpOnly: true,
+      maxAge: 1000 * 60 * 60 * 24, // 24 hours
+      sameSite: 'strict',
+    },
+  })
+);
 
 // CSRF Protection
 const csrfProtection = csrf({
