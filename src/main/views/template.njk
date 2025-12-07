@@ -1,7 +1,39 @@
 {% extends "govuk/template.njk" %}
 
+{% from "govuk/components/header/macro.njk" import govukHeader %}
+
 {% block head %}
   {% include "webpack/css.njk" %}
+{% endblock %}
+
+{% block header %}
+  {{ govukHeader({
+    homepageUrl: "/",
+    serviceName: "HMCTS Task Management",
+    serviceUrl: "/",
+    navigation: [
+      {
+        href: "/tasks",
+        text: "Tasks",
+        active: true if currentUrl == '/tasks'
+      }
+    ] if email else [],
+    navigationClasses: "govuk-header__navigation--end",
+    containerClasses: "govuk-width-container"
+  }) }}
+
+  {% if email %}
+  <div class="govuk-width-container">
+    <div class="govuk-phase-banner">
+      <p class="govuk-phase-banner__content">
+        <span class="govuk-phase-banner__text">
+          Signed in as <strong>{{ email }}</strong>
+          <a href="/auth/logout" class="govuk-link govuk-!-margin-left-3">Sign out</a>
+        </span>
+      </p>
+    </div>
+  </div>
+  {% endif %}
 {% endblock %}
 
 {% block bodyEnd %}
