@@ -31,8 +31,8 @@ jest.mock('config', () => ({
         prettyPrint: false,
       };
     }
-    if (key === 'rateLimiting.windowMs') return 15 * 60 * 1000;
-    if (key === 'rateLimiting.max') return 100;
+    if (key === 'rateLimiting.windowMs') {return 15 * 60 * 1000;}
+    if (key === 'rateLimiting.max') {return 100;}
     return null;
   }),
 }));
@@ -90,10 +90,13 @@ describe('App Integration Tests', () => {
 
     it('should log 404 errors', async () => {
       await request(app).get('/non-existent');
-      expect(logger.warn).toHaveBeenCalledWith('Route not found', expect.objectContaining({
-        path: '/non-existent',
-        method: 'GET',
-      }));
+      expect(logger.warn).toHaveBeenCalledWith(
+        'Route not found',
+        expect.objectContaining({
+          path: '/non-existent',
+          method: 'GET',
+        })
+      );
     });
 
     it('should handle 404 for different HTTP methods', async () => {
@@ -158,9 +161,7 @@ describe('App Integration Tests', () => {
 
   describe('Cookie Parser', () => {
     it('should parse cookies from requests', async () => {
-      const response = await request(app)
-        .get('/')
-        .set('Cookie', 'test=value');
+      const response = await request(app).get('/').set('Cookie', 'test=value');
 
       // App should handle the request without errors
       expect([200, 500]).toContain(response.status);
@@ -198,9 +199,7 @@ describe('App Integration Tests', () => {
     });
 
     it('should handle POST requests', async () => {
-      const response = await request(app)
-        .post('/tasks/create')
-        .send({ title: 'Test' });
+      const response = await request(app).post('/tasks/create').send({ title: 'Test' });
 
       // Tasks routes now require authentication, expect redirect
       expect([200, 302, 400, 500]).toContain(response.status);
@@ -219,10 +218,7 @@ describe('App Integration Tests', () => {
 
   describe('Content Type Handling', () => {
     it('should accept JSON content type', async () => {
-      const response = await request(app)
-        .post('/test')
-        .set('Content-Type', 'application/json')
-        .send({ data: 'test' });
+      const response = await request(app).post('/test').set('Content-Type', 'application/json').send({ data: 'test' });
 
       expect([200, 404, 415]).toContain(response.status);
     });

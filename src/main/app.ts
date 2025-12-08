@@ -9,8 +9,8 @@ import config from 'config';
 import cookieParser from 'cookie-parser';
 import csrf from 'csurf';
 import express, { NextFunction, Request, Response } from 'express';
-import session from 'express-session';
 import { rateLimit } from 'express-rate-limit';
+import session from 'express-session';
 import { glob } from 'glob';
 import helmet from 'helmet';
 import favicon from 'serve-favicon';
@@ -32,7 +32,7 @@ app.use(
     contentSecurityPolicy: {
       directives: {
         defaultSrc: ["'self'"],
-        scriptSrc: ["'self'", "'unsafe-inline'"],
+        scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'"],
         styleSrc: ["'self'", "'unsafe-inline'"],
         imgSrc: ["'self'", 'data:', 'https:'],
         fontSrc: ["'self'", 'data:'],
