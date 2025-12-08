@@ -1,7 +1,6 @@
 import { Nunjucks } from '../../main/modules/nunjucks';
 
-import express from 'express';
-import { Request, Response, NextFunction } from 'express';
+import express, { NextFunction, Request, Response } from 'express';
 import * as nunjucks from 'nunjucks';
 
 jest.mock('nunjucks');
@@ -141,9 +140,7 @@ describe('Nunjucks Module', () => {
       nunjucksInstance.enableFor(app);
 
       // Get the middleware function
-      const middleware = (app.use as jest.Mock).mock.calls.find(
-        call => typeof call[0] === 'function'
-      )[0];
+      const middleware = (app.use as jest.Mock).mock.calls.find(call => typeof call[0] === 'function')[0];
 
       const mockReq = { path: '/test/path' } as Request;
       const mockRes = { locals: {} } as Response;
@@ -159,9 +156,7 @@ describe('Nunjucks Module', () => {
       const nunjucksInstance = new Nunjucks(false);
       nunjucksInstance.enableFor(app);
 
-      const middleware = (app.use as jest.Mock).mock.calls.find(
-        call => typeof call[0] === 'function'
-      )[0];
+      const middleware = (app.use as jest.Mock).mock.calls.find(call => typeof call[0] === 'function')[0];
 
       const testPaths = ['/', '/tasks', '/tasks/create', '/api/users/123'];
 
@@ -183,28 +178,22 @@ describe('Nunjucks Module', () => {
       const nunjucksInstance = new Nunjucks(true);
       nunjucksInstance.enableFor(app);
 
-      expect(nunjucks.configure).toHaveBeenCalledWith(
-        expect.any(String),
-        {
-          autoescape: true,
-          watch: true,
-          express: app,
-        }
-      );
+      expect(nunjucks.configure).toHaveBeenCalledWith(expect.any(String), {
+        autoescape: true,
+        watch: true,
+        express: app,
+      });
     });
 
     it('should work correctly for production environment', () => {
       const nunjucksInstance = new Nunjucks(false);
       nunjucksInstance.enableFor(app);
 
-      expect(nunjucks.configure).toHaveBeenCalledWith(
-        expect.any(String),
-        {
-          autoescape: true,
-          watch: false,
-          express: app,
-        }
-      );
+      expect(nunjucks.configure).toHaveBeenCalledWith(expect.any(String), {
+        autoescape: true,
+        watch: false,
+        express: app,
+      });
     });
 
     it('should be callable multiple times without errors', () => {

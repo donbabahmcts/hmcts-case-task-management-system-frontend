@@ -1,12 +1,12 @@
 import {
-  sanitizeInput,
-  requestLogger,
-  validateContentType,
-  securityHeaders,
   detectSuspiciousActivity,
+  requestLogger,
+  sanitizeInput,
+  securityHeaders,
+  validateContentType,
 } from '../../main/middleware/security';
 
-import { Request, Response, NextFunction } from 'express';
+import { NextFunction, Request, Response } from 'express';
 
 // Mock logger
 jest.mock('../../main/utils/logger', () => ({
@@ -117,17 +117,20 @@ describe('Security Middleware', () => {
       // Simulate response finish
       finishCallback();
 
-      expect(logger.info).toHaveBeenCalledWith('HTTP Request', expect.objectContaining({
-        method: 'GET',
-        path: '/test',
-        statusCode: 200,
-        ip: '127.0.0.1',
-        userAgent: 'Mozilla/5.0',
-        duration: expect.any(Number),
-      }));
+      expect(logger.info).toHaveBeenCalledWith(
+        'HTTP Request',
+        expect.objectContaining({
+          method: 'GET',
+          path: '/test',
+          statusCode: 200,
+          ip: '127.0.0.1',
+          userAgent: 'Mozilla/5.0',
+          duration: expect.any(Number),
+        })
+      );
     });
 
-    it('should capture response time accurately', (done) => {
+    it('should capture response time accurately', done => {
       let finishCallback: () => void = () => {};
       (mockResponse.on as jest.Mock).mockImplementation((event: string, callback: () => void) => {
         if (event === 'finish') {
@@ -234,7 +237,10 @@ describe('Security Middleware', () => {
 
     it('should set Permissions-Policy header', () => {
       securityHeaders(mockRequest as Request, mockResponse as Response, nextFunction);
-      expect(mockResponse.setHeader).toHaveBeenCalledWith('Permissions-Policy', 'geolocation=(), microphone=(), camera=()');
+      expect(mockResponse.setHeader).toHaveBeenCalledWith(
+        'Permissions-Policy',
+        'geolocation=(), microphone=(), camera=()'
+      );
     });
 
     it('should call next after setting headers', () => {
@@ -271,9 +277,12 @@ describe('Security Middleware', () => {
       detectSuspiciousActivity(mockRequest as Request, mockResponse as Response, nextFunction);
 
       expect(mockResponse.status).toHaveBeenCalledWith(403);
-      expect(mockResponse.render).toHaveBeenCalledWith('error', expect.objectContaining({
-        message: 'Forbidden: Suspicious activity detected',
-      }));
+      expect(mockResponse.render).toHaveBeenCalledWith(
+        'error',
+        expect.objectContaining({
+          message: 'Forbidden: Suspicious activity detected',
+        })
+      );
       expect(nextFunction).not.toHaveBeenCalled();
       expect(logger.warn).toHaveBeenCalledWith('Suspicious activity detected', expect.any(Object));
     });
@@ -335,12 +344,15 @@ describe('Security Middleware', () => {
 
       detectSuspiciousActivity(mockRequest as Request, mockResponse as Response, nextFunction);
 
-      expect(logger.warn).toHaveBeenCalledWith('Suspicious activity detected', expect.objectContaining({
-        path: '/../../etc/passwd',
-        ip: '127.0.0.1',
-        userAgent: 'BadBot/1.0',
-        pattern: expect.any(String),
-      }));
+      expect(logger.warn).toHaveBeenCalledWith(
+        'Suspicious activity detected',
+        expect.objectContaining({
+          path: '/../../etc/passwd',
+          ip: '127.0.0.1',
+          userAgent: 'BadBot/1.0',
+          pattern: expect.any(String),
+        })
+      );
     });
 
     it('should handle case-insensitive SQL keywords', () => {
