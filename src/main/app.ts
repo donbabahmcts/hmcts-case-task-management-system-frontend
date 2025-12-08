@@ -13,7 +13,6 @@ import { rateLimit } from 'express-rate-limit';
 import session from 'express-session';
 import { glob } from 'glob';
 import helmet from 'helmet';
-import favicon from 'serve-favicon';
 
 const { setupDev } = require('./development');
 
@@ -68,7 +67,6 @@ app.use(limiter);
 
 new Nunjucks(developmentMode).enableFor(app);
 
-app.use(favicon(path.join(__dirname, '/public/assets/images/favicon.ico')));
 app.use(bodyParser.json({ limit: '10mb' }));
 app.use(bodyParser.urlencoded({ extended: false, limit: '10mb' }));
 app.use(cookieParser());

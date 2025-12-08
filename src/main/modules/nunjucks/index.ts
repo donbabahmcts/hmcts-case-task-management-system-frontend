@@ -10,7 +10,13 @@ export class Nunjucks {
 
   enableFor(app: express.Express): void {
     app.set('view engine', 'njk');
-    nunjucks.configure(path.join(__dirname, '..', '..', 'views'), {
+
+    const govukFrontendPath = path.dirname(require.resolve('govuk-frontend/package.json'));
+
+    nunjucks.configure([
+      path.join(__dirname, '..', '..', 'views'),
+      govukFrontendPath
+    ], {
       autoescape: true,
       watch: this.developmentMode,
       express: app,
