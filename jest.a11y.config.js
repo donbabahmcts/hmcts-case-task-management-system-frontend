@@ -6,4 +6,11 @@ module.exports = {
   transform: {
     '^.+\\.ts?$': 'ts-jest',
   },
+  testTimeout: 30000, // 30 seconds for Puppeteer tests
+  preset: 'ts-jest',
+  globals: {
+    'ts-jest': {
+      isolatedModules: true,
+    },
+  },
 };
