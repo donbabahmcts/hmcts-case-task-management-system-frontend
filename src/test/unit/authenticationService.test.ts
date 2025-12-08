@@ -1,6 +1,7 @@
 import { AuthenticationService } from '../../main/services/authenticationService';
-import axios from 'axios';
 import { logger } from '../../main/utils/logger';
+
+import axios from 'axios';
 
 jest.mock('axios');
 jest.mock('../../main/utils/logger');
@@ -198,9 +199,7 @@ describe('AuthenticationService', () => {
     it('should validate required fields', async () => {
       // When/Then
       await expect(authService.authenticate('', 'password')).rejects.toThrow('Email is required');
-      await expect(authService.authenticate('test@example.com', '')).rejects.toThrow(
-        'Password is required'
-      );
+      await expect(authService.authenticate('test@example.com', '')).rejects.toThrow('Password is required');
     });
   });
 
@@ -221,11 +220,7 @@ describe('AuthenticationService', () => {
 
       // Then
       expect(result.message).toBe('Logout successful');
-      expect(mockedAxios.post).toHaveBeenCalledWith(
-        `${mockBackendUrl}/api/auth/logout`,
-        { token },
-        expect.any(Object)
-      );
+      expect(mockedAxios.post).toHaveBeenCalledWith(`${mockBackendUrl}/api/auth/logout`, { token }, expect.any(Object));
     });
 
     it('should handle logout without token', async () => {

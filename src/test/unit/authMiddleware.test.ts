@@ -1,6 +1,7 @@
-import { requireAuth, redirectIfAuthenticated, clearAuth } from '../../main/middleware/auth';
-import { Request, Response, NextFunction } from 'express';
+import { clearAuth, redirectIfAuthenticated, requireAuth } from '../../main/middleware/auth';
 import { logger } from '../../main/utils/logger';
+
+import { NextFunction, Request, Response } from 'express';
 
 jest.mock('../../main/utils/logger');
 
