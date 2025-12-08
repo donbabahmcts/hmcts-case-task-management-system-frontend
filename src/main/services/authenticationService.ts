@@ -1,5 +1,6 @@
-import axios, { AxiosError } from 'axios';
 import { logger } from '../utils/logger';
+
+import axios, { AxiosError } from 'axios';
 
 export interface ValidateEmailResponse {
   success: boolean;
