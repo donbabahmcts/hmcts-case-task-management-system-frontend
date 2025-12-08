@@ -1,7 +1,7 @@
 /// <reference path="../types/express-session.d.ts" />
 
-import { logger } from '../utils/logger';
 import { requireAuth } from '../middleware/auth';
+import { logger } from '../utils/logger';
 
 import axios from 'axios';
 import config from 'config';
@@ -100,6 +100,10 @@ export default function (app: Application): void {
           errorMessage = 'Please correct the validation errors below.';
         } else if (errorData && errorData.message) {
           errorMessage = errorData.message;
+          // If the error message contains "business day" or "weekend", attribute it to dueDateTime field
+          if (errorMessage.toLowerCase().includes('business day') || errorMessage.toLowerCase().includes('weekend')) {
+            validationErrors.dueDateTime = errorMessage;
+          }
         }
       }
 

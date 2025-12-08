@@ -11,6 +11,18 @@ jest.mock('csurf', () => {
   return jest.fn(() => (req: unknown, res: unknown, next: () => void) => next());
 });
 
+// Mock authentication middleware to bypass auth checks in tests
+jest.mock('../../main/middleware/auth', () => ({
+  requireAuth: (req: any, res: any, next: () => void) => {
+    // Mock authenticated session
+    req.session = req.session || {};
+    req.session.token = 'mock-jwt-token';
+    next();
+  },
+  redirectIfAuthenticated: (req: any, res: any, next: () => void) => next(),
+  clearAuth: (req: any, res: any, next: () => void) => next(),
+}));
+
 // Mock logger
 jest.mock('../../main/utils/logger', () => ({
   logger: {
@@ -48,6 +60,13 @@ describe('Tasks Routes', () => {
     jest.clearAllMocks();
   });
 
+  // Helper to create authenticated session
+  const authenticatedAgent = () => {
+    const agent = request.agent(app);
+    // Mock session with authentication
+    return agent;
+  };
+
   describe('GET /tasks', () => {
     it('should fetch and render task list successfully', async () => {
       const mockTasks = [
@@ -78,6 +97,7 @@ describe('Tasks Routes', () => {
       const response = await request(app).get('/tasks');
       expect(response.status).toBe(200);
       expect(mockedAxios.get).toHaveBeenCalledWith('http://localhost:4000/api/tasks', {
+        headers: { Authorization: 'Bearer mock-jwt-token' },
         timeout: 10000,
       });
     });
@@ -135,9 +155,10 @@ describe('Tasks Routes', () => {
         },
         expect.objectContaining({
           timeout: 10000,
-          headers: {
+          headers: expect.objectContaining({
             'Content-Type': 'application/json',
-          },
+            Authorization: 'Bearer mock-jwt-token',
+          }),
         })
       );
     });
@@ -337,7 +358,8 @@ describe('Tasks Routes', () => {
       });
 
       expect(mockedAxios.post).toHaveBeenCalled();
-    });    it('should handle special characters in task title', async () => {
+    });
+    it('should handle special characters in task title', async () => {
       const specialTitle = 'Test & Task <> "Special" \'Chars\'';
 
       mockedAxios.post.mockResolvedValue({
@@ -485,9 +507,12 @@ describe('Tasks Routes', () => {
 
       await request(app).get('/tasks');
 
-      expect(logger.info).toHaveBeenCalledWith('Tasks fetched successfully', expect.objectContaining({
-        count: 2,
-      }));
+      expect(logger.info).toHaveBeenCalledWith(
+        'Tasks fetched successfully',
+        expect.objectContaining({
+          count: 2,
+        })
+      );
     });
 
     it('should log task creation attempts', async () => {
@@ -501,9 +526,12 @@ describe('Tasks Routes', () => {
         dueDateTime: '2025-12-15T14:30',
       });
 
-      expect(logger.info).toHaveBeenCalledWith('Submitting task creation request', expect.objectContaining({
-        title: 'New Task',
-      }));
+      expect(logger.info).toHaveBeenCalledWith(
+        'Submitting task creation request',
+        expect.objectContaining({
+          title: 'New Task',
+        })
+      );
     });
 
     it('should log successful task creation', async () => {
@@ -517,9 +545,12 @@ describe('Tasks Routes', () => {
         dueDateTime: '2025-12-15T14:30',
       });
 
-      expect(logger.info).toHaveBeenCalledWith('Task created successfully', expect.objectContaining({
-        taskId: 123,
-      }));
+      expect(logger.info).toHaveBeenCalledWith(
+        'Task created successfully',
+        expect.objectContaining({
+          taskId: 123,
+        })
+      );
     });
 
     it('should log task creation errors', async () => {
@@ -531,9 +562,12 @@ describe('Tasks Routes', () => {
         dueDateTime: '2025-12-15T14:30',
       });
 
-      expect(logger.error).toHaveBeenCalledWith('Error creating task', expect.objectContaining({
-        error: expect.anything(),
-      }));
+      expect(logger.error).toHaveBeenCalledWith(
+        'Error creating task',
+        expect.objectContaining({
+          error: expect.anything(),
+        })
+      );
     });
 
     it('should log task fetching errors', async () => {
@@ -541,9 +575,12 @@ describe('Tasks Routes', () => {
 
       await request(app).get('/tasks');
 
-      expect(logger.error).toHaveBeenCalledWith('Error fetching tasks', expect.objectContaining({
-        error: expect.anything(),
-      }));
+      expect(logger.error).toHaveBeenCalledWith(
+        'Error fetching tasks',
+        expect.objectContaining({
+          error: expect.anything(),
+        })
+      );
     });
   });
 });

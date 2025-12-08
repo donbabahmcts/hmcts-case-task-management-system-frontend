@@ -32,12 +32,7 @@ describe('validateEnvironment', () => {
   describe('successful validation', () => {
     beforeEach(() => {
       mockedConfig.has.mockImplementation((path: string) => {
-        return [
-          'services.backend.url',
-          'services.backend.timeout',
-          'server.port',
-          'logging.level',
-        ].includes(path);
+        return ['services.backend.url', 'services.backend.timeout', 'server.port', 'logging.level'].includes(path);
       });
 
       mockedConfig.get.mockImplementation((path: string) => {
@@ -53,10 +48,13 @@ describe('validateEnvironment', () => {
 
     it('should pass validation with all required configs present', () => {
       expect(() => validateEnvironment()).not.toThrow();
-      expect(logger.info).toHaveBeenCalledWith('Environment validation passed', expect.objectContaining({
-        nodeEnv: 'development',
-        backendUrl: 'http://localhost:4000',
-      }));
+      expect(logger.info).toHaveBeenCalledWith(
+        'Environment validation passed',
+        expect.objectContaining({
+          nodeEnv: 'development',
+          backendUrl: 'http://localhost:4000',
+        })
+      );
     });
 
     it('should not log any errors when validation passes', () => {
@@ -73,9 +71,9 @@ describe('validateEnvironment', () => {
       });
 
       mockedConfig.get.mockImplementation((path: string) => {
-        if (path === 'services.backend.timeout') return 10000;
-        if (path === 'server.port') return 3100;
-        if (path === 'logging.level') return 'info';
+        if (path === 'services.backend.timeout') {return 10000;}
+        if (path === 'server.port') {return 3100;}
+        if (path === 'logging.level') {return 'info';}
         return undefined;
       });
 
@@ -90,11 +88,12 @@ describe('validateEnvironment', () => {
       mockedConfig.has.mockReturnValue(false);
 
       expect(() => validateEnvironment()).toThrow('Environment validation failed');
-      expect(logger.error).toHaveBeenCalledWith('Environment validation failed', expect.objectContaining({
-        errors: expect.arrayContaining([
-          expect.stringContaining('Missing required configuration'),
-        ]),
-      }));
+      expect(logger.error).toHaveBeenCalledWith(
+        'Environment validation failed',
+        expect.objectContaining({
+          errors: expect.arrayContaining([expect.stringContaining('Missing required configuration')]),
+        })
+      );
       expect(consoleErrorSpy.mock.calls.length).toBeGreaterThan(1);
     });
 
@@ -118,10 +117,10 @@ describe('validateEnvironment', () => {
 
     it('should check types of configuration values', () => {
       mockedConfig.get.mockImplementation((path: string) => {
-        if (path === 'services.backend.url') return 12345 as unknown as string;
-        if (path === 'services.backend.timeout') return 10000;
-        if (path === 'server.port') return 3100;
-        if (path === 'logging.level') return 'info';
+        if (path === 'services.backend.url') {return 12345 as unknown as string;}
+        if (path === 'services.backend.timeout') {return 10000;}
+        if (path === 'server.port') {return 3100;}
+        if (path === 'logging.level') {return 'info';}
         return undefined;
       });
 
@@ -131,10 +130,10 @@ describe('validateEnvironment', () => {
 
     it('should fail when port is not a number', () => {
       mockedConfig.get.mockImplementation((path: string) => {
-        if (path === 'services.backend.url') return 'http://localhost:4000';
-        if (path === 'services.backend.timeout') return 10000;
-        if (path === 'server.port') return '3100'; // Wrong type
-        if (path === 'logging.level') return 'info';
+        if (path === 'services.backend.url') {return 'http://localhost:4000';}
+        if (path === 'services.backend.timeout') {return 10000;}
+        if (path === 'server.port') {return '3100';} // Wrong type
+        if (path === 'logging.level') {return 'info';}
         return undefined;
       });
 
@@ -146,10 +145,10 @@ describe('validateEnvironment', () => {
 
     it('should fail when timeout is not a number', () => {
       mockedConfig.get.mockImplementation((path: string) => {
-        if (path === 'services.backend.url') return 'http://localhost:4000';
-        if (path === 'services.backend.timeout') return '10000'; // Wrong type
-        if (path === 'server.port') return 3100;
-        if (path === 'logging.level') return 'info';
+        if (path === 'services.backend.url') {return 'http://localhost:4000';}
+        if (path === 'services.backend.timeout') {return '10000';} // Wrong type
+        if (path === 'server.port') {return 3100;}
+        if (path === 'logging.level') {return 'info';}
         return undefined;
       });
 
@@ -167,40 +166,36 @@ describe('validateEnvironment', () => {
 
     it('should fail when string config is empty', () => {
       mockedConfig.get.mockImplementation((path: string) => {
-        if (path === 'services.backend.url') return '';
-        if (path === 'services.backend.timeout') return 10000;
-        if (path === 'server.port') return 3100;
-        if (path === 'logging.level') return 'info';
+        if (path === 'services.backend.url') {return '';}
+        if (path === 'services.backend.timeout') {return 10000;}
+        if (path === 'server.port') {return 3100;}
+        if (path === 'logging.level') {return 'info';}
         return undefined;
       });
 
       expect(() => validateEnvironment()).toThrow();
-      expect(consoleErrorSpy).toHaveBeenCalledWith(
-        expect.stringContaining('services.backend.url cannot be empty')
-      );
+      expect(consoleErrorSpy).toHaveBeenCalledWith(expect.stringContaining('services.backend.url cannot be empty'));
     });
 
     it('should fail when string config is only whitespace', () => {
       mockedConfig.get.mockImplementation((path: string) => {
-        if (path === 'services.backend.url') return '   ';
-        if (path === 'services.backend.timeout') return 10000;
-        if (path === 'server.port') return 3100;
-        if (path === 'logging.level') return 'info';
+        if (path === 'services.backend.url') {return '   ';}
+        if (path === 'services.backend.timeout') {return 10000;}
+        if (path === 'server.port') {return 3100;}
+        if (path === 'logging.level') {return 'info';}
         return undefined;
       });
 
       expect(() => validateEnvironment()).toThrow();
-      expect(consoleErrorSpy).toHaveBeenCalledWith(
-        expect.stringContaining('services.backend.url cannot be empty')
-      );
+      expect(consoleErrorSpy).toHaveBeenCalledWith(expect.stringContaining('services.backend.url cannot be empty'));
     });
 
     it('should fail when number config is not positive', () => {
       mockedConfig.get.mockImplementation((path: string) => {
-        if (path === 'services.backend.url') return 'http://localhost:4000';
-        if (path === 'services.backend.timeout') return -1000; // Invalid
-        if (path === 'server.port') return 3100;
-        if (path === 'logging.level') return 'info';
+        if (path === 'services.backend.url') {return 'http://localhost:4000';}
+        if (path === 'services.backend.timeout') {return -1000;} // Invalid
+        if (path === 'server.port') {return 3100;}
+        if (path === 'logging.level') {return 'info';}
         return undefined;
       });
 
@@ -212,25 +207,23 @@ describe('validateEnvironment', () => {
 
     it('should fail when number config is zero', () => {
       mockedConfig.get.mockImplementation((path: string) => {
-        if (path === 'services.backend.url') return 'http://localhost:4000';
-        if (path === 'services.backend.timeout') return 10000;
-        if (path === 'server.port') return 0; // Invalid
-        if (path === 'logging.level') return 'info';
+        if (path === 'services.backend.url') {return 'http://localhost:4000';}
+        if (path === 'services.backend.timeout') {return 10000;}
+        if (path === 'server.port') {return 0;} // Invalid
+        if (path === 'logging.level') {return 'info';}
         return undefined;
       });
 
       expect(() => validateEnvironment()).toThrow();
-      expect(consoleErrorSpy).toHaveBeenCalledWith(
-        expect.stringContaining('server.port must be a positive number')
-      );
+      expect(consoleErrorSpy).toHaveBeenCalledWith(expect.stringContaining('server.port must be a positive number'));
     });
 
     it('should fail when number config is NaN', () => {
       mockedConfig.get.mockImplementation((path: string) => {
-        if (path === 'services.backend.url') return 'http://localhost:4000';
-        if (path === 'services.backend.timeout') return NaN; // Invalid
-        if (path === 'server.port') return 3100;
-        if (path === 'logging.level') return 'info';
+        if (path === 'services.backend.url') {return 'http://localhost:4000';}
+        if (path === 'services.backend.timeout') {return NaN;} // Invalid
+        if (path === 'server.port') {return 3100;}
+        if (path === 'logging.level') {return 'info';}
         return undefined;
       });
 
@@ -249,10 +242,10 @@ describe('validateEnvironment', () => {
 
     it('should fail when backend URL points to localhost in production', () => {
       mockedConfig.get.mockImplementation((path: string) => {
-        if (path === 'services.backend.url') return 'http://localhost:4000';
-        if (path === 'services.backend.timeout') return 10000;
-        if (path === 'server.port') return 3100;
-        if (path === 'logging.level') return 'info';
+        if (path === 'services.backend.url') {return 'http://localhost:4000';}
+        if (path === 'services.backend.timeout') {return 10000;}
+        if (path === 'server.port') {return 3100;}
+        if (path === 'logging.level') {return 'info';}
         return undefined;
       });
 
@@ -264,10 +257,10 @@ describe('validateEnvironment', () => {
 
     it('should fail when backend URL points to 127.0.0.1 in production', () => {
       mockedConfig.get.mockImplementation((path: string) => {
-        if (path === 'services.backend.url') return 'http://127.0.0.1:4000';
-        if (path === 'services.backend.timeout') return 10000;
-        if (path === 'server.port') return 3100;
-        if (path === 'logging.level') return 'info';
+        if (path === 'services.backend.url') {return 'http://127.0.0.1:4000';}
+        if (path === 'services.backend.timeout') {return 10000;}
+        if (path === 'server.port') {return 3100;}
+        if (path === 'logging.level') {return 'info';}
         return undefined;
       });
 
@@ -279,34 +272,35 @@ describe('validateEnvironment', () => {
 
     it('should warn when using HTTP in production for non-localhost URLs', () => {
       mockedConfig.get.mockImplementation((path: string) => {
-        if (path === 'services.backend.url') return 'http://api.example.com';
-        if (path === 'services.backend.timeout') return 10000;
-        if (path === 'server.port') return 3100;
-        if (path === 'logging.level') return 'info';
+        if (path === 'services.backend.url') {return 'http://api.example.com';}
+        if (path === 'services.backend.timeout') {return 10000;}
+        if (path === 'server.port') {return 3100;}
+        if (path === 'logging.level') {return 'info';}
         return undefined;
       });
 
       validateEnvironment();
-      expect(logger.warn).toHaveBeenCalledWith(
-        'Backend URL is using HTTP in production. HTTPS is recommended.'
-      );
+      expect(logger.warn).toHaveBeenCalledWith('Backend URL is using HTTP in production. HTTPS is recommended.');
     });
 
     it('should pass with HTTPS URL in production', () => {
       mockedConfig.get.mockImplementation((path: string) => {
-        if (path === 'services.backend.url') return 'https://api.example.com';
-        if (path === 'services.backend.timeout') return 10000;
-        if (path === 'server.port') return 3100;
-        if (path === 'logging.level') return 'info';
+        if (path === 'services.backend.url') {return 'https://api.example.com';}
+        if (path === 'services.backend.timeout') {return 10000;}
+        if (path === 'server.port') {return 3100;}
+        if (path === 'logging.level') {return 'info';}
         return undefined;
       });
 
       expect(() => validateEnvironment()).not.toThrow();
       expect(logger.warn).not.toHaveBeenCalled();
-      expect(logger.info).toHaveBeenCalledWith('Environment validation passed', expect.objectContaining({
-        nodeEnv: 'production',
-        backendUrl: 'https://api.example.com',
-      }));
+      expect(logger.info).toHaveBeenCalledWith(
+        'Environment validation passed',
+        expect.objectContaining({
+          nodeEnv: 'production',
+          backendUrl: 'https://api.example.com',
+        })
+      );
     });
   });
 
