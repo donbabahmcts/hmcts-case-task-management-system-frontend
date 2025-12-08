@@ -1,8 +1,9 @@
-import { Application, Request, Response } from 'express';
-import { AuthenticationService } from '../services/authenticationService';
 import { redirectIfAuthenticated } from '../middleware/auth';
+import { AuthenticationService } from '../services/authenticationService';
 import { logger } from '../utils/logger';
+
 import config from 'config';
+import { Application, Request, Response } from 'express';
 
 interface ServiceConfig {
   url: string;
@@ -166,7 +167,7 @@ export default function (app: Application): void {
     }
 
     // Clear session
-    req.session?.destroy((err) => {
+    req.session?.destroy(err => {
       if (err) {
         logger.error('Session destruction error', { error: err.message });
       }
