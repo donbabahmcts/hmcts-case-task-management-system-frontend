@@ -137,8 +137,8 @@ Run `yarn test:a11y` to validate compliance (see [Quality Assurance](#quality-as
 
 ```bash
 # Clone the repository
-git clone https://github.com/donbabahmcts/hmcts-case-management-system-frontend.git
-cd hmcts-case-management-system-frontend
+git clone https://github.com/donbabahmcts/hmcts-case-task-management-system-frontend.git
+cd hmcts-case-task-management-system-frontend
 
 # Install dependencies
 yarn install
